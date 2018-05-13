@@ -20,6 +20,8 @@ public class SgqrTrans {
 
     private Float tranAmt;
 
+    private String cardNo;
+
     public String getType() {
         return type;
     }
@@ -90,5 +92,13 @@ public class SgqrTrans {
 
     public void setTranAmt(Float tranAmt) {
         this.tranAmt = tranAmt;
+    }
+
+    public String getCardNo() {
+        return cardNo;
+    }
+
+    public void setCardNo(String cardNo) {
+        this.cardNo = cardNo;
     }
 }

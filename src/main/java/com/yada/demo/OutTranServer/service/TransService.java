@@ -90,9 +90,46 @@ public class TransService {
         return sb.toString();
     }
 
-    // TODO 模拟SGQR交易
-    public TransResult sgqrTrans(SgqrTrans trans) {
-        return new TransResult();
+    // 模拟SGQR交易
+    public TransResult sgqrTrans(SgqrTrans sgqrTrans) {
+        Trans trans = new Trans();
+        trans.setBatchNo(transProperties.getBatchNo());
+        trans.setInvoiceNo(transProperties.getInvoiceNo());
+        trans.setTranAmt(sgqrTrans.getTranAmt());
+        trans.setTranType("80");
+        trans.setTranDate(DateUtils.getCurrent());
+        trans.setChannel("sgqr");
+        trans.setAuthNo(transProperties.getAuthNo());
+        trans.setRrn(transProperties.getRrn());
+        trans.setRespCode("00");
+        if ("union".equals(sgqrTrans.getType())) {
+            trans.setCardNo(sgqrTrans.getCardNo());
+            trans.setMerNo(sgqrTrans.getUnionMerNo());
+            trans.setTermNo(sgqrProperties.getUnionPay().getAcqNo());
+            trans.setMcc(sgqrTrans.getUnionMerNo().substring(7, 11));
+        }
+        if ("wechat".equals(sgqrTrans.getType())) {
+            trans.setCardNo(sgqrTrans.getCardNo());
+            trans.setMerNo(sgqrTrans.getWechatMerNo());
+            trans.setTermNo(sgqrTrans.getWechatTermNo());
+            trans.setMcc(sgqrTrans.getUnionMerNo().substring(7, 11));
+        }
+        if ("sgqr".equals(sgqrTrans.getType())) {
+            trans.setCardNo(sgqrTrans.getCardNo());
+            trans.setMerNo(sgqrTrans.getSgqrId());
+            trans.setTermNo(sgqrTrans.getSgqrPostalCode());
+            trans.setMcc(sgqrTrans.getSgqrUnitNumber());
+        }
+        trans = transDao.saveAndFlush(trans);
+
+        TransResult result = new TransResult();
+        result.setResCode(trans.getRespCode());
+        result.setTranAmt(trans.getTranAmt());
+        result.setTranDate(trans.getTranDate());
+        result.setCardNo(trans.getCardNo());
+        result.setMerNo(trans.getMerNo());
+        result.setTermNo(trans.getTermNo());
+        return result;
     }
 
     // 模拟NETS交易
